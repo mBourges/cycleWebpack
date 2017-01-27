@@ -1,0 +1,14 @@
+@import '../variables.scss';
+
+.container {
+  padding-top: $header-mobile;
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  margin: 0em;
+  width: 100%;
+
+  @media screen and (min-device-width: $break-large) {
+    padding-top: $header-desktop;
+  }
+}

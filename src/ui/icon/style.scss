@@ -1,0 +1,15 @@
+.icon {
+  position: relative;
+  display: inline-block;
+  height: 48px;
+  width: 48px;
+  font-size: 24px;
+  cursor: pointer;
+
+  & > i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}

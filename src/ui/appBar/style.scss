@@ -1,0 +1,144 @@
+@import '../variables.scss';
+
+.appbar {
+  display: flex;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 300;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),
+    0 1px 10px 0 rgba(0,0,0,.12),
+    0 2px 4px -1px rgba(0,0,0,.2);
+  background: $default-primary-color;
+  height: $header-mobile;
+  padding: 0px 2px;
+  transition-duration: .5s;
+  transition-property: transform;
+  transition-property: transform, -webkit-transform;
+  transition-timing-function: cubic-bezier(.215,.61,.355,1);
+
+  @media screen and (min-device-width: $break-large) {
+    height: $header-desktop;
+    padding: 0px 12px;
+  }
+}
+
+.appbar__menu {
+  display: inline-block;
+  color: white;
+  margin: 4px 0px;
+
+  @media screen and (min-device-width: $break-large) {
+   visibility: hidden;
+    margin: 8px 0px;
+  }
+}
+
+.appbar__title {
+  display: flex;
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  align-items: center;
+}
+
+.appbar__icons {
+  display: inline-block;
+  color: white;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  margin-left: auto;
+
+  @media screen and (min-device-width: $break-large) {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: auto;
+  }
+}
+
+.appbar__nav {
+  display: none;
+
+  @media screen and (max-device-width: $break-large - 1px) {
+    display: flex;
+
+    ul {
+      box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 401;
+      display: flex;
+      width: 28rem;
+      max-width: calc(100% - 5.6rem);
+      height: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: space-between;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      color: #424242;
+      pointer-events: none;
+      background-color: #fafafa;
+      border-right: 1px solid #e0e0e0;
+      transition: transform .35s cubic-bezier(.4,0,.2,1);
+      transform: translateX(-100%);
+      width: 32rem;
+      max-width: 32rem;
+    }
+
+    &.is-open ul {
+      transform: translateX(0);
+      pointer-events: all;
+    }
+
+    .nav__overlay {
+      display:block;
+      background-color: #000;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0;
+      height: 100%;
+      z-index: 400;
+      opacity: 0;
+      transition: opacity .35s cubic-bezier(.4,0,.2,1);
+      pointer-events: none;
+    }
+
+    &.is-open .nav__overlay {
+      width: 100%;
+      opacity: 0.6;
+      pointer-events: all;
+    }
+  }
+
+  @media screen and (min-device-width: $break-large) {
+    display: flex;
+    align-items: center;
+    margin-left: 50px;
+
+    ul {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    li {
+    	display: inline-block;
+    	float: left;
+    	padding: 10px;
+    	min-width: 48px;
+      padding: 15px 10px;
+      cursor: pointer;
+    }
+
+    li > a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+  }
+}

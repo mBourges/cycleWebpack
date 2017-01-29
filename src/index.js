@@ -4,7 +4,6 @@ import { makeDOMDriver } from '@cycle/dom';
 import { makeHistoryDriver } from '@cycle/history';
 import { createHistory } from 'history';
 import getComponentFromRoute from './routes';
-/*import switchPath from 'switch-path';*/
 
 import 'normalize.css/normalize.css';
 import './styles.css';

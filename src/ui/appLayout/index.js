@@ -4,12 +4,21 @@ import appBar from '../appBar';
 import './style.scss';
 
 export default function AppLayout(sources) {
-  const router = sources.DOM.select('a').events('click')
+   const navLinkClick$ = sources.DOM.select('a').events('click')
     .map(ev => {
       ev.preventDefault();
 
       return ev.target.pathname;
     });
+
+    const navButtonClick$ = sources.DOM.select('.mdl-button').events('click')
+     .map(ev => {
+       ev.preventDefault();
+
+       return ev.target.value;
+     });
+
+  const router = xs.merge(navLinkClick$, navButtonClick$)
 
   const AppBar = appBar({
     DOM: sources.DOM,

@@ -23,11 +23,8 @@ function appBar({ DOM, props }) {
           a('.navLink', { props: { href: '/' } }, 'HOME')
         ]),
         li([
-          a('.navLink', { props: { href: '/other' } }, 'Other')
-        ]),
-        li([
-          a('.navLink', { props: { href: '/inquiry/new' } }, 'NEW')
-        ]),
+          a('.navLink', { props: { href: '/student' } }, 'STUDENTS')
+        ])
       ])
     ])
   ]));

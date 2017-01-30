@@ -1,3 +1,4 @@
+import xs from 'xstream';
 import { run } from '@cycle/xstream-run';
 import { makeDOMDriver } from '@cycle/dom';
 import { makeHistoryDriver } from '@cycle/history';
@@ -11,7 +12,20 @@ import './styles.css';
 import appLayout from './ui/appLayout';
 
 function main(sources) {
-  const sinks = sources.router
+  const logout$ = sources.DOM.select('.logout').events('click')
+    .mapTo('logout');
+
+  const displayLogin = sources.auth0.token$
+    .filter(token => !token)
+    .map(() => xs.never());
+
+  const redirectAfterLogin = sources.auth0.on(['authenticated'])
+    .map(({ state }) => JSON.parse(state))
+    .map(({ pathname }) => xs.of(pathname));
+
+  const sinks = sources.auth0.token$
+    .filter(token => !!token)
+    .mapTo(sources.router).flatten()
     .map(getComponentFromRoute)
     .map(({ value }) => value)
     .flatten()
@@ -23,12 +37,19 @@ function main(sources) {
       }
     }));
 
-  const component$ = sinks.map(c => c.DOM).flatten();
-  const router$ = sinks.map(c => c.router).flatten();
+  const component$ = xs.merge(
+    displayLogin,
+    sinks.map(c => c.DOM)
+  ).flatten();
+  const router$ = xs.merge(
+    redirectAfterLogin,
+    sinks.map(c => c.router)
+  ).flatten();
 
   return {
     DOM: component$,
-    router: router$
+    router: router$,
+    auth0: logout$
   };
 }
 
@@ -44,7 +65,18 @@ const dispose = run(main, {
         container: 'app',
         allowSignUp: false,
         socialBigButtons: true,
-        focusInput: true
+        focusInput: true,
+        auth: {
+          redirectUrl: `${window.location.origin}/`,
+          responseType: 'token',
+          params: {
+            scope: 'openid user_metadata',
+            state: JSON.stringify({
+              pathname: window.location.pathname,
+              search: window.location.search
+            })
+          }
+        }
       }
     }
   )

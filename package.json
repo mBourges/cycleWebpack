@@ -37,8 +37,10 @@
     "@cycle/history": "^4.1.0",
     "@cycle/isolate": "^1.4.0",
     "@cycle/xstream-run": "^4.2.0",
+    "auth0-lock": "^10.10.2",
     "cyclic-router": "^3.0.1",
     "history": "^3.2.1",
+    "jwt-decode": "^2.1.0",
     "normalize.css": "^5.0.0",
     "switch-path": "^1.2.0",
     "xstream": "^9.3.0"

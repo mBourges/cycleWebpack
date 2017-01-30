@@ -13,7 +13,17 @@ module.exports = env => {
     context: resolve('src'),
     entry: {
       app: './index.js',
-      vendors: ['@cycle/dom', '@cycle/xstream-run', 'xstream']
+      auth: ['auth0-lock', 'jwt-decode'],
+      vendors: [
+        '@cycle/dom',
+        '@cycle/xstream-run',
+        'xstream',
+        '@cycle/history',
+        '@cycle/isolate',
+        'cyclic-router',
+        'history',
+        'switch-path'
+      ]
     },
     output: {
       filename: env.prod ? 'bundle.[name].[chunkhash].js' : 'bundle.[name].js',
@@ -43,7 +53,7 @@ module.exports = env => {
       }),
       ifProd(new InlineManifestWebpackPlugin()),
       ifProd(new webpack.optimize.CommonsChunkPlugin({
-        name: ['vendors', 'manifest']
+        name: ['auth', 'vendors', 'manifest']
       })),
       new HtmlWebpackPlugin({
         template: './index.html'

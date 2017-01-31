@@ -7,9 +7,24 @@ import makeAuth0Driver from './drivers/auth0Driver';
 import getComponentFromRoute from './routes';
 
 import 'normalize.css/normalize.css';
+import 'semantic-ui-css/semantic.min.css';
 import './styles.css';
 
 import appLayout from './ui/appLayout';
+
+function app(sources) {
+  return sources.router
+    .map(getComponentFromRoute)
+    .map(({ value }) => value)
+    .flatten()
+    .map(c => appLayout({
+      DOM: sources.DOM,
+      router: sources.router,
+      props:{
+        child: c.default(sources)
+      }
+    }));
+}
 
 function main(sources) {
   const logout$ = sources.DOM.select('.logout').events('click')
@@ -25,17 +40,8 @@ function main(sources) {
 
   const sinks = sources.auth0.token$
     .filter(token => !!token)
-    .mapTo(sources.router).flatten()
-    .map(getComponentFromRoute)
-    .map(({ value }) => value)
-    .flatten()
-    .map(c => appLayout({
-      DOM: sources.DOM,
-      router: sources.router,
-      props:{
-        child: c.default(sources)
-      }
-    }));
+    .map(() => app(sources))
+    .flatten();
 
   const component$ = xs.merge(
     displayLogin,

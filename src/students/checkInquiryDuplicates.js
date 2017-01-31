@@ -1,36 +1,36 @@
 import xs from 'xstream';
-import { form, div, h3 } from '@cycle/dom';
-import inputComponent from '../ui/input';
+import { form, div, h4, label } from '@cycle/dom';
+import fieldComponent from '../ui/input/field';
 import { buttonComponent, navButtonComponent } from '../ui/button';
 import sampleCombine from 'xstream/extra/sampleCombine';
 import './style.scss';
 
 function checkInquiryDuplicates(sources) {
-  const firstnameInput = inputComponent({
+  const firstnameInput = fieldComponent({
     DOM: sources.DOM,
     props: xs.of({
       name: 'Firstname',
       required: true,
-      labelFor: '名（漢字）'
+      placeholder: '名（漢字）'
     })
   });
 
-  const lastnameInput = inputComponent({
+  const lastnameInput = fieldComponent({
     DOM: sources.DOM,
     props: xs.of({
       name: 'lastname',
       required: true,
-      labelFor: '姓（漢字）'
+      placeholder: '姓（漢字）'
     })
   });
 
-  const birthdateInput = inputComponent({
+  const birthdateInput = fieldComponent({
     DOM: sources.DOM,
     props: xs.of({
       name: 'birthdate',
       type: 'date',
       required: true,
-      labelFor: '生年月日'
+      placeholder: '生年月日'
     })
   });
 
@@ -70,9 +70,8 @@ function checkInquiryDuplicates(sources) {
 
 
 
-const submit$ = sources.DOM.select('.checkInquiryDuplicates')
-  .events('submit')
-  .debug(ev => ev.preventDefault());
+const submit$ = sources.DOM.select('.checkInquiryDuplicates').events('submit')
+  .debug(event => event.preventDefault());
 
 
 
@@ -99,7 +98,35 @@ submit$.compose(sampleCombine(formIput$))
     birthdateInputDOM,
     searchSubmitButtonDOM,
     cancelButtonDOM
-  ]) => form('.checkInquiryDuplicates .row .center-xs', [
+  ]) => form('.ui.form.checkInquiryDuplicates', [
+    h4('.ui.dividing.header', '複製確認'),
+    div('.field', [
+      label('Name'),
+      div('.two.fields', [
+        div('.field.required', [ lastnameInputDOM ]),
+        div('.field.required', [ firstnameInputDOM ])
+      ])
+    ]),
+    div('.field.required', [
+      label('生年月日'),
+      birthdateInputDOM
+    ]),
+    searchSubmitButtonDOM,
+    cancelButtonDOM
+  ]))
+
+  return {
+    DOM: page$,
+  }
+}
+
+export default checkInquiryDuplicates;
+
+
+
+
+/*
+form('.checkInquiryDuplicates .row .center-xs', [
     div('.col-xs-6', [
       div('.mdl-card .mdl-shadow--2dp', [
         div('.mdl-card__title', [
@@ -120,11 +147,4 @@ submit$.compose(sampleCombine(formIput$))
         ])
       ])
     ])
-  ]))
-
-  return {
-    DOM: page$,
-  }
-}
-
-export default checkInquiryDuplicates;
+  ])*/

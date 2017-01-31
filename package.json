@@ -21,6 +21,7 @@
     "babel-preset-stage-2": "^6.22.0",
     "css-loader": "^0.26.1",
     "extract-text-webpack-plugin": "^2.0.0-beta.5",
+    "file-loader": "^0.10.0",
     "html-webpack-plugin": "^2.26.0",
     "inline-manifest-webpack-plugin": "^3.0.1",
     "node-sass": "^4.3.0",
@@ -42,6 +43,7 @@
     "history": "^3.2.1",
     "jwt-decode": "^2.1.0",
     "normalize.css": "^5.0.0",
+    "semantic-ui-css": "^2.2.4",
     "switch-path": "^1.2.0",
     "xstream": "^9.3.0"
   }

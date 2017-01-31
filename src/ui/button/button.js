@@ -3,11 +3,12 @@ import { button } from '@cycle/dom';
 
 function buttonComponent({ DOM, props }) {
   const component$ = props
-    .map(({ label, value, type, disabled, primary, raised, accent }) => button('.mdl-button', {
+    .map(({ label, value, type, disabled, primary, positive, negative, loading }) => button('.ui.button', {
       class: {
-        'mdl-button--primary': !!primary,
-        'mdl-button--raised': !!raised,
-        'mdl-button--accent': !!accent
+        'primary': !!primary,
+        'positive': !!positive,
+        'negative': !!negative,
+        'loading': !!loading
       },
       props: {
         value,
@@ -16,7 +17,7 @@ function buttonComponent({ DOM, props }) {
       }
     }, label));
 
-  const click$ = DOM.select('.mdl-button').events('click').debug();
+  const click$ = DOM.select('.ui.button').events('click').debug();
 
   return {
     DOM: component$,

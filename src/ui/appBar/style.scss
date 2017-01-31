@@ -1,5 +1,34 @@
 @import '../variables.scss';
 
+.toc {
+  position: relative;
+  z-index: 1;
+  background-color: #1b1c1d;
+  width: 250px;
+  flex: 0 0 auto;
+  overflow-y: auto;
+
+  @media screen and (max-device-width: $break-large) {
+    display: none;
+  }
+}
+
+.mobile.ui.fixed.inverted.main.menu {
+  @media screen and (min-device-width: $break-large) {
+    display: none;
+  }
+}
+
+.mobile > .ui.container {
+  position: relative;
+  margin-left: 3em !important;
+  margin-right: 3em !important;
+  width: auto !important;
+  max-width: 960px !important;
+}
+
+/*@import '../variables.scss';
+
 .appbar {
   display: flex;
   left: 0;
@@ -142,3 +171,4 @@
     }
   }
 }
+*/

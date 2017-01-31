@@ -42,7 +42,11 @@ module.exports = env => {
         { test: /\.scss$/, loader: ExtractTextPlugin.extract({
           fallbackLoader: 'style-loader',
           loader: 'css-loader!sass-loader'
-        })  }
+        })  },
+        {
+          test: /\.(eot|svg|ttf|woff|woff2|png)$/,
+          loader: 'file-loader?name=public/fonts/[name].[ext]'
+        }
       ]
     },
     plugins: removeEmpty([

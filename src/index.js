@@ -69,8 +69,10 @@ const dispose = run(main, {
   HTTP: makeHTTPDriver(),
   router: makeHistoryDriver(createHistory()),
   auth0: makeAuth0Driver(
-    '09ViMqXjKjrASjbnzRpICiTdCJ3sKr51',
-    'appmonster.auth0.com',
+    '6eRUnFnqvHLY878KJ1V8Rc02dXgTWGke',
+    'quard.auth0.com',
+    // '09ViMqXjKjrASjbnzRpICiTdCJ3sKr51',
+    // 'appmonster.auth0.com',
     {
       storageKey: 'id_token',
       lockOptions: {

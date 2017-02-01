@@ -5,6 +5,8 @@ import { buttonComponent, navButtonComponent } from '../ui/button';
 import sampleCombine from 'xstream/extra/sampleCombine';
 import './style.scss';
 
+import generateSearchInquiryDuplicatesQuery from '../queries/searchInquiryDuplicates';
+
 function checkInquiryDuplicates(sources) {
   const firstnameInput = fieldComponent({
     DOM: sources.DOM,
@@ -18,7 +20,7 @@ function checkInquiryDuplicates(sources) {
   const lastnameInput = fieldComponent({
     DOM: sources.DOM,
     props: xs.of({
-      name: 'lastname',
+      name: 'Lastname',
       required: true,
       placeholder: '姓（漢字）'
     })
@@ -27,7 +29,7 @@ function checkInquiryDuplicates(sources) {
   const birthdateInput = fieldComponent({
     DOM: sources.DOM,
     props: xs.of({
-      name: 'birthdate',
+      name: 'BirthDate',
       type: 'date',
       required: true,
       placeholder: '生年月日'
@@ -73,10 +75,15 @@ function checkInquiryDuplicates(sources) {
 const submit$ = sources.DOM.select('.checkInquiryDuplicates').events('submit')
   .debug(event => event.preventDefault());
 
-const request$ = submit$.mapTo({
-  url: 'https://jsonplaceholder.typicode.com/users',
-  category: 'users',
-}).debug();
+const request$ = submit$.compose(sampleCombine(formIput$))
+  .map(([ev, queryParams]) => queryParams)
+  .map(({Firstname, Lastname, BirthDate}) => ({
+    url: generateSearchInquiryDuplicatesQuery(Firstname, Lastname, BirthDate),
+    headers: {
+      Authorization: `Bearer ${window.localStorage.getItem('id_token')}`
+    },
+    category: 'inquiryDuplicates',
+  })).debug();
 
 sources.HTTP.select().flatten().addListener({
   next: i => console.log(i),

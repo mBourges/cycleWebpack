@@ -1,6 +1,7 @@
 import xs from 'xstream';
 import { run } from '@cycle/xstream-run';
 import { makeDOMDriver } from '@cycle/dom';
+import { makeHTTPDriver } from '@cycle/http';
 import { makeHistoryDriver } from '@cycle/history';
 import { createHistory } from 'history';
 import makeAuth0Driver from './drivers/auth0Driver';
@@ -20,6 +21,7 @@ function app(sources) {
     .map(c => appLayout({
       DOM: sources.DOM,
       router: sources.router,
+      HTTP: sources.HTTP,
       props:{
         child: c.default(sources)
       }
@@ -52,15 +54,19 @@ function main(sources) {
     sinks.map(c => c.router)
   ).flatten();
 
+  const request$ = sinks.map(c => c.HTTP).flatten();
+console.log(request$)
   return {
     DOM: component$,
     router: router$,
+    HTTP: request$,
     auth0: logout$
   };
 }
 
 const dispose = run(main, {
   DOM: makeDOMDriver('#app'),
+  HTTP: makeHTTPDriver(),
   router: makeHistoryDriver(createHistory()),
   auth0: makeAuth0Driver(
     '09ViMqXjKjrASjbnzRpICiTdCJ3sKr51',

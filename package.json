@@ -36,6 +36,7 @@
   "dependencies": {
     "@cycle/dom": "^14.3.0",
     "@cycle/history": "^4.1.0",
+    "@cycle/http": "^11.3.0",
     "@cycle/isolate": "^1.4.0",
     "@cycle/xstream-run": "^4.2.0",
     "auth0-lock": "^10.10.2",

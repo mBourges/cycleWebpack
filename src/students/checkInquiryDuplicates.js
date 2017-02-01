@@ -73,7 +73,16 @@ function checkInquiryDuplicates(sources) {
 const submit$ = sources.DOM.select('.checkInquiryDuplicates').events('submit')
   .debug(event => event.preventDefault());
 
+const request$ = submit$.mapTo({
+  url: 'https://jsonplaceholder.typicode.com/users',
+  category: 'users',
+}).debug();
 
+sources.HTTP.select().flatten().addListener({
+  next: i => console.log(i),
+  error: err => console.error(err),
+  complete: () => console.log('completed'),
+})
 
 
 submit$.compose(sampleCombine(formIput$))
@@ -117,6 +126,7 @@ submit$.compose(sampleCombine(formIput$))
 
   return {
     DOM: page$,
+    HTTP: request$
   }
 }
 

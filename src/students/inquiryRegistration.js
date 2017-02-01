@@ -16,7 +16,8 @@ function inquiryRegistration(sources) {
   ]))
 
   return {
-      DOM: page$
+      DOM: page$,
+      HTTP: checkInquiryDuplicatesComponent.HTTP
   };
 //   const firstnameInput = inputComponent({
 //     DOM: sources.DOM,

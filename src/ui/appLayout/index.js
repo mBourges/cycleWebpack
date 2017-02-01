@@ -64,6 +64,7 @@ export default function AppLayout(sources) {
 
   return {
     DOM: page$,
-    router
+    router,
+    HTTP: child.HTTP || xs.never()
   };
 }

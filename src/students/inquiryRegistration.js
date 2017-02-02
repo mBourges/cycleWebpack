@@ -7,12 +7,24 @@ import { h2, div } from '@cycle/dom';
 
 function inquiryRegistration(sources) {
   const checkInquiryDuplicatesComponent = checkInquiryDuplicates(sources);
+  const searchInquiryDuplicate$ = sources.HTTP.select('inquiryDuplicates')
+    .flatten();
+
+  const isSearchDone$ = searchInquiryDuplicate$.mapTo(true)
+    .startWith(false);
+
+  sources.HTTP.select('inquiryDuplicates').flatten().addListener({
+    next: i => console.log(i),
+    error: err => console.error(err),
+    complete: () => console.log('completed'),
+  })
 
   const page$ = xs.combine(
+    isSearchDone$,
     checkInquiryDuplicatesComponent.DOM
-  ).map(([checkInquiryDuplicatesComponentDOM]) => div([
+  ).map(([isSearchDone, checkInquiryDuplicatesComponentDOM]) => div([
     h2('Inquiry Registration'),
-    checkInquiryDuplicatesComponentDOM
+    isSearchDone ? null : checkInquiryDuplicatesComponentDOM
   ]))
 
   return {

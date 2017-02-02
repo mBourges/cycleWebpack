@@ -59,7 +59,7 @@ console.log(request$)
   return {
     DOM: component$,
     router: router$,
-    HTTP: request$,
+    HTTP: request$.debug(),
     auth0: logout$
   };
 }

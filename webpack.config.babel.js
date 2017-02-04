@@ -22,7 +22,8 @@ module.exports = env => {
         '@cycle/isolate',
         'cyclic-router',
         'history',
-        'switch-path'
+        'switch-path',
+        'immutable'
       ]
     },
     output: {
@@ -32,6 +33,10 @@ module.exports = env => {
       publicPath: '/'
     },
     devtool: env.prod ? 'source-map' : 'eval',
+    resolve: {
+      modules: [ "node_modules", resolve(__dirname, "src") ],
+      extensions: [".js", ".json", ".jsx", ".css", "scss"]
+    },
     module: {
       loaders: [
         { test: /\.js$/, loaders: ['babel-loader'], exclude: /node_modules/ },

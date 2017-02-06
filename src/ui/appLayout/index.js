@@ -6,6 +6,7 @@ import mobileSidebar from '../appBar/mobileSidebar';
 import './style.scss';
 
 import dropdown from '../input/dropdown';
+import autocomplete from '../input/autocomplete';
 
 export default function AppLayout(sources) {
    const navLinkClick$ = sources.DOM.select('.navLink').events('click')
@@ -48,8 +49,13 @@ export default function AppLayout(sources) {
 
 
 const list = dropdown(sources, xs.of({
+  name: 'Gender',
+  value: 'male',
+  sources: sources.picklistValues.select('Gender')
+}));
+const list2 = dropdown(sources, xs.of({
   default: 'other',
-  sources: [{
+  sources: xs.of([{
     label: 'Male',
     value: 'male'
   }, {
@@ -58,18 +64,42 @@ const list = dropdown(sources, xs.of({
   }, {
     label: 'Other',
     value: 'other'
-  }]
+  }])
 }));
-// const list2 = dropdown(sources);
 
-list.selectedValue$.addListener({
+const search = autocomplete(sources, xs.of({
+  name: 'GenderSearch',
+  // value: 'other',
+  sources: sources.picklistValues.select('Gender')
+}));
+
+
+list.value$.addListener({
   next: i => console.log('selected Value: ', i),
   error: err => console.error(err),
   complete: () => console.log('completed'),
 })
 
-  const page$ = xs.combine(list.DOM, /*list2.DOM,*/ AppBar.DOM, MobileAppBar.DOM, child.DOM, MobileSidebar.DOM, openMenu$)
-    .map(([listDOM, /*list2DOM,*/ AppBarDOM, MobileAppBarDOM, childDOM, MobileSidebarDOM, isOpen]) =>
+list2.value$.addListener({
+  next: i => console.log('selected Value: ', i),
+  error: err => console.error(err),
+  complete: () => console.log('completed'),
+})
+
+search.value$.addListener({
+  next: i => console.log('search Value: ', i),
+  error: err => console.error(err),
+  complete: () => console.log('completed'),
+})
+
+sources.picklistValues.select('Gender').addListener({
+  next: i => console.log('APP SOURCES ', i),
+  error: err => console.error(err),
+  complete: () => console.log('completed'),
+})
+
+  const page$ = xs.combine(list.DOM, list2.DOM, search.DOM, AppBar.DOM, MobileAppBar.DOM, child.DOM, MobileSidebar.DOM, openMenu$)
+    .map(([listDOM, list2DOM, searchDOM, AppBarDOM, MobileAppBarDOM, childDOM, MobileSidebarDOM, isOpen]) =>
       div('.pushable', [
         MobileAppBarDOM,
         MobileSidebarDOM,
@@ -80,7 +110,8 @@ list.selectedValue$.addListener({
               div('.article__inner', [
                 childDOM,
                 listDOM,
-                /*list2DOM*/
+                list2DOM,
+                searchDOM
               ])
             ])
           ])

@@ -5,6 +5,7 @@ import { makeHTTPDriver } from '@cycle/http';
 import { makeHistoryDriver } from '@cycle/history';
 import { createHistory } from 'history';
 import makeAuth0Driver from './drivers/auth0Driver';
+import makePicklistValueDriver from './drivers/picklistValuesDriver';
 import getComponentFromRoute from './routes';
 
 import 'normalize.css/normalize.css';
@@ -22,6 +23,7 @@ function app(sources) {
       DOM: sources.DOM,
       router: sources.router,
       HTTP: sources.HTTP,
+      picklistValues: sources.picklistValues,
       props:{
         child: c.default(sources)
       }
@@ -56,7 +58,7 @@ function main(sources) {
   ).flatten();
 
   const request$ = sinks.map(c => c.HTTP).flatten();
-console.log(request$)
+
   return {
     DOM: component$,
     router: router$,
@@ -68,6 +70,7 @@ console.log(request$)
 const dispose = run(main, {
   DOM: makeDOMDriver('#app'),
   HTTP: makeHTTPDriver(),
+  picklistValues: makePicklistValueDriver([]),
   router: makeHistoryDriver(createHistory()),
   auth0: makeAuth0Driver(
     '6eRUnFnqvHLY878KJ1V8Rc02dXgTWGke',

@@ -1,8 +1,14 @@
 import xs from 'xstream';
-import { div, label, input, span, i } from '@cycle/dom';
+import { div, input, i } from '@cycle/dom';
 import isolate from '@cycle/isolate';
 import './style.scss';
 import delay from 'xstream/extra/delay';
+
+function filterOptions(sources, searchText) {
+  console.log(sources, searchText)
+  const regexp = new RegExp(searchText, 'i');
+  return searchText !== '' ? sources.filter(val => regexp.test(val.label)) : sources.slice(0, 20);
+}
 
 function formatOptions(item) {
   return div('.item', {
@@ -22,9 +28,13 @@ function getLabelFromSource(sources, value) {
 function dropdownComponent({ DOM }, props = xs.of({})) {
   const defaultValue$ = props.map(props => ({
     name: props.name,
-    label: '', //props.sources.filter(opt => opt.value === props.value).map(opt => opt.label),//getLabelFromSource(props.sources, props.value),
+    label: '', //getLabelFromSource(props.sources, props.value),
     value: props.value
   }));
+
+  const searchInput$ = DOM.select('input.search').events('input')
+    .map(event => event.target.value !== '')
+    .startWith(false);
 
   const optionClick$ = DOM.select('.item').events('click')
     .debug(event => {
@@ -44,16 +54,24 @@ function dropdownComponent({ DOM }, props = xs.of({})) {
     valueClick$
   ).remember().debug('VALUE');
 
-  const dropdownClick$ = DOM.select('.dropdown').events('click')
-    .mapTo(true)
-    .startWith(false);
+  const dropdownClick$ = xs.merge(
+    DOM.select('input.search').events('click').mapTo(true),
+    DOM.select('input.search').events('blur').compose(delay(200)).mapTo(false)
+  ).startWith(false);
 
   const bodyStopCondition$ = xs.merge(
     DOM.select('.item').events('click'),
     DOM.select('body').events('click').drop(1).compose(delay(100))
   );
 
+  const resetInput$ = xs.merge(
+    DOM.select('input.search').events('input').mapTo(true),
+    DOM.select('input.search').events('blur').compose(delay(200)).debug(event => event.target.value = '').mapTo(false)
+  )
+  // optionClick$ )
 
+  //.mapTo(true)
+.debug('RESET').startWith(false);
 
   /*const selectedValueClick$ = DOM.select('.item').events('click')
     .debug(event => {
@@ -84,24 +102,32 @@ function dropdownComponent({ DOM }, props = xs.of({})) {
     selectedValueClick$.map(event=> event.target.dataset)
   ).startWith({})*/
 
-  const sources$ = props.map(props => props.sources).flatten()
-    .map(options => options.map(formatOptions))
-    // .startWith([])
-    // .debug('SOURCES sources$')
-    //.map(props => props.sources.map(formatOptions)).flatten().debug('SOURCES sources$')
+  const sources$ = xs.combine(
+    props.map(props => props.sources).flatten(),
+    xs.merge(
+      DOM.select('input.search').events('input').map(event => event.target.value).startWith(''),
+      DOM.select('input.search').events('blur').compose(delay(200)).mapTo('')
+    )
+  ).map(([options, searchText]) => filterOptions(options, searchText))
+  .map(filtered => filtered.map(formatOptions))
+  .startWith([]);
 
 
-  const component$ = xs.combine(dropdownStatus$, animating$, value$, sources$)
-    .map(([isOpen, isAnimating, selected, sources]) => {
-      return div('.ui.selection.dropdown', {
+  const component$ = xs.combine(dropdownStatus$, animating$, value$, sources$, searchInput$, resetInput$)
+    .map(([isOpen, isAnimating, selected, sources, searchInput, resetInput]) => {
+      return div('.ui.selection.dropdown.search', {
       class: {
         active: isOpen,
         visible: isOpen
       }
     }, [
       i('.dropdown.icon'),
-      div('.text', {
-        class: { default: !selected.label }
+      input('.search'),
+      div('.text.search__text', {
+        class: {
+          default: !selected.label,
+          filtered: searchInput && resetInput
+        }
       }, selected.label || 'Gender'),
       div('.menu.transition.animating.slide.down',
         { class: {

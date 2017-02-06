@@ -2,15 +2,22 @@ import xs from 'xstream';
 import { form, h4, div, label, input } from '@cycle/dom';
 import inputComponent from '../ui/input/field';
 
-function newInquiryForm(sources) {
-  const lastnameKanji = inputComponent(sources, xs.of({
+import textAreaComponent from '../ui/input/textArea';
+import dropdown from '../ui/input/dropdown';
+
+function newInquiryForm(sources, inquiry = xs.of({})) {
+  const lastnameKanji = inquiry.map(inquiry => inputComponent(sources, xs.of({
     name: 'LastnameKanji',
-    placeholder: '姓（漢字）'
-  }));
-  const firstnameKanji = inputComponent(sources, xs.of({
+    placeholder: '姓（漢字）',
+    value: inquiry.Lastname
+  })));
+
+  const firstnameKanji = inquiry.map(inquiry => inputComponent(sources, xs.of({
     name: 'FirstnameKanji',
-    placeholder: '名（漢字）'
-  }));
+    placeholder: '名（漢字）',
+    value: inquiry.Firstname
+  })));
+
   const lastnameFurigana = inputComponent(sources, xs.of({
     name: 'LastnameFurigana',
     placeholder: '姓（ふり）'
@@ -20,10 +27,11 @@ function newInquiryForm(sources) {
     placeholder: '名（ふり）'
   }));
 
-  const protectorLastnameKanji = inputComponent(sources, xs.of({
+  const protectorLastnameKanji = inquiry.map(inquiry => inputComponent(sources, xs.of({
     name: 'Protector.LastnameKanji',
-    placeholder: '姓（漢字）'
-  }));
+    placeholder: '姓（漢字）',
+    value: inquiry.Lastname
+  })));
   const protectorFirstnameKanji = inputComponent(sources, xs.of({
     name: 'Protector.FirstnameKanji',
     placeholder: '名（漢字）'
@@ -37,24 +45,41 @@ function newInquiryForm(sources) {
     placeholder: '名（ふり）'
   }));
 
-  const birthdateInput = inputComponent(sources, xs.of({
+  const birthdateInput = inquiry.map(inquiry => inputComponent(sources, xs.of({
       name: 'BirthDate',
       type: 'date',
       required: true,
-      placeholder: '生年月日'
+      placeholder: '生年月日',
+      value: inquiry.BirthDate
     })
-  );
+  ));
+
+  const schoolYearInput = dropdown(sources, xs.of({
+    name: 'SchoolYear',
+    // value: 'male',
+    sources: sources.picklistValues.select('SchoolYear')
+  }));
+
+  var textArea = textAreaComponent(sources, xs.of({
+    name: 'Content',
+    required: true,
+    label: 'Content',
+    checkError: value => value === '' || value === null
+  }))
+
 
   const component$ = xs.combine(
-    lastnameKanji.DOM,
-    firstnameKanji.DOM,
+    lastnameKanji.map(input => input.DOM).flatten(),
+    firstnameKanji.map(input => input.DOM).flatten(),
     lastnameFurigana.DOM,
     firstnameFurigana.DOM,
-    birthdateInput.DOM,
-    protectorLastnameKanji.DOM,
+    birthdateInput.map(input => input.DOM).flatten(),
+    protectorLastnameKanji.map(input => input.DOM).flatten(),
     protectorFirstnameKanji.DOM,
     protectorLastnameFurigana.DOM,
-    protectorFirstnameFurigana.DOM
+    protectorFirstnameFurigana.DOM,
+    textArea.DOM,
+    schoolYearInput.DOM
   ).map(([
     lastnameKanjiDOM,
     firstnameKanjiDOM,
@@ -64,7 +89,9 @@ function newInquiryForm(sources) {
     protectorLastnameKanjiDOM,
     protectorFirstnameKanjiDOM,
     protectorLastnameFuriganaDOM,
-    protectorFirstnameFuriganaDOM
+    protectorFirstnameFuriganaDOM,
+    textAreaDOM,
+    schoolYearInputDOM
   ]) =>form('.ui.form', [
     div('.ui.stackable.two.column.grid', [
       div('.column', [
@@ -73,10 +100,10 @@ function newInquiryForm(sources) {
           label('氏名（漢字）'),
           div('.two.fields', [
             div('.field', [
-              firstnameKanjiDOM
+              lastnameKanjiDOM
             ]),
             div('.field', [
-              lastnameKanjiDOM
+              firstnameKanjiDOM
             ])
           ])
         ]),
@@ -91,42 +118,48 @@ function newInquiryForm(sources) {
             ])
           ])
         ]),
-  div('.two.fields', [
-        div('.field', [
-          label('生年月日'),
-          birthdateInputDOM
-        ]),
-
-        div('.inline.fields', [
-          label('性別'),
+        div('.two.fields', [
           div('.field', [
-            div('.ui.radio.checkbox', [
-              input({
-                props: {
-                  type: "radio",
-                  name: "Gender",
-                  checked: false
-                },
-                class: 'hidden'
-              }),
-              label('Male')
-            ])
+            label('生年月日'),
+            birthdateInputDOM
           ]),
-          div('.field', [
-            div('.ui.radio.checkbox', [
-              input({
-                props: {
-                  type: "radio",
-                  name: "Gender",
-                  checked: false
-                },
-                class: 'hidden'
-              }),
-              label('Female')
+
+          div('.inline.fields', [
+            label('性別'),
+            div('.field', [
+              div('.ui.radio.checkbox', [
+                input({
+                  props: {
+                    type: "radio",
+                    name: "Gender",
+                    checked: false
+                  },
+                  class: 'hidden'
+                }),
+                label('Male')
+              ])
+            ]),
+            div('.field', [
+              div('.ui.radio.checkbox', [
+                input({
+                  props: {
+                    type: "radio",
+                    name: "Gender",
+                    checked: false
+                  },
+                  class: 'hidden'
+                }),
+                label('Female')
+              ])
             ])
           ])
+        ]),
+        div('.two.fields', [
+          div('.field', [
+            label('School Year'),
+            schoolYearInputDOM
+          ])
         ])
-])
       ]),
       div('.column', [
         h4('.ui.dividing.header', '保護者情報'),
@@ -155,7 +188,8 @@ function newInquiryForm(sources) {
       ]),
       div('.one.column.row', [
         div('.column', [
-          h4('.ui.dividing.header', '問合せ内容')
+          h4('.ui.dividing.header', '問合せ内容'),
+          textAreaDOM
         ])
       ])
     ])

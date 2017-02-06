@@ -8,7 +8,8 @@
     "build": "webpack --env.prod -p",
     "prebuild:dev": "rimraf dist",
     "build:dev": "webpack --env.dev",
-    "start": "webpack-dev-server --host $IP --port $PORT --env.dev --history-api-fallback --hot",
+    "c9": "webpack-dev-server --host $IP --port $PORT --env.dev --history-api-fallback --hot",
+    "start": "webpack-dev-server --env.dev --history-api-fallback --hot",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

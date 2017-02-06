@@ -1,5 +1,5 @@
 import xs from 'xstream';
-import { div, input } from '@cycle/dom';
+import { div, textarea, label } from '@cycle/dom';
 import isolate from '@cycle/isolate';
 import './style.scss';
 
@@ -11,7 +11,7 @@ function checkErrorFromProps(props) {
   return checkInputErrors(props.checkError, props.value);
 }
 
-function inputComponent({ DOM }, props = xs.of({})) {
+function textAreaComponent({ DOM }, props = xs.of({})) {
   const initialErrorCheck$ = props.map(checkErrorFromProps);
   const defaultValue$ = props.map(props => ({
     name: props.name,
@@ -34,8 +34,10 @@ function inputComponent({ DOM }, props = xs.of({})) {
       required: props.required,
       error: errors
     } }, [
-      input('.inputField', {
+      label(props.label),
+      textarea('.inputField', {
         props: {
+          rows: 10,
           name: props.name,
           type: props.type || 'text',
           defaultValue: props.value || '',
@@ -56,4 +58,4 @@ function inputComponent({ DOM }, props = xs.of({})) {
   };
 }
 
-export default (sources, props) => isolate(inputComponent)(sources, props);
+export default (sources, props) => isolate(textAreaComponent)(sources, props);

@@ -6,7 +6,7 @@ import { h2, div } from '@cycle/dom';
 
 function inquiryRegistration(sources) {
   const checkInquiryDuplicatesComponent = checkInquiryDuplicates(sources);
-  const newInquiryFormComponent = newInquiryForm(sources);
+  const newInquiryFormComponent = newInquiryForm(sources, checkInquiryDuplicatesComponent.inquiry);
   const duplicatesListComponent = duplicatesList(sources);
   const searchInquiryDuplicate$ = sources.HTTP.select('inquiryDuplicates')
     .flatten();

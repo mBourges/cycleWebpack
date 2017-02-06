@@ -47,6 +47,7 @@ function destopMenu({ DOM, props }) {
       div('.menu', [
         a('.item .navLink', { props: { href: '/student' } }, 'search'),
         a('.item .navLink', { props: { href: '/inquiry/new' } }, 'New Toiawase'),
+        a('.item .logout', { props: { href: '/' } }, 'logout'),
       ])
     ])
   ])

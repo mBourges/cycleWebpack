@@ -1,4 +1,4 @@
-import { h4, div } from '@cycle/dom';
+import { h4, div, a } from '@cycle/dom';
 import { fromJS, Map } from 'immutable';
 import { formatDate } from '../helpers/dateHelpers';
 import './style.scss';
@@ -6,13 +6,13 @@ import './style.scss';
 function generateCard(inquiry) {
   return div('.card', [
     div('.content', [
-      div('.header', `${inquiry.getIn(['_source', 'LastnameKanji'])} ${inquiry.getIn(['_source', 'FirstnameKanji'])}`),
+      a('.header .navLink', { props: { href: `/inquiry/${inquiry.getIn(['_source', 'id'])}` } }, `${inquiry.getIn(['_source', 'LastnameKanji'])} ${inquiry.getIn(['_source', 'FirstnameKanji'])}`),
       div('.meta', `${inquiry.getIn(['_source', 'LastnameFurigana'])} ${inquiry.getIn(['_source', 'FirstnameFurigana'])}`),
       div('.description', [
         div(`生年月日： ${formatDate(inquiry.getIn(['_source', 'BirthDate']))}`),
         div(`${inquiry.getIn(['_source', 'School'])} (${inquiry.getIn(['_source', 'SchoolYear'])})`)
       ]),
-      div('.description.extaDescription', [
+      div('.description.extraDescription', [
         h4('保護者'),
         div(`${inquiry.getIn(['_source', 'Protector', 'LastnameKanji'])} ${inquiry.getIn(['_source', 'Protector', 'FirstnameKanji'])}`),
         div(inquiry.getIn(['_source', 'Protector', 'Phone']))
@@ -20,18 +20,6 @@ function generateCard(inquiry) {
     ])
   ]);
 }
-
-
-
-   /*
-<CardText>
-
-
-   <CardText>
-      <h5 className="inquiry__card-text-title">保護者</h5>
-      <div>{ inquiry.Protector && `${inquiry.Protector.LastnameKanji} ${inquiry.Protector.FirstnameKanji}` }</div>
-      <div>{ inquiry.Protector && inquiry.Protector.Phone }</div>
-    </CardText>*/
 
 function intent({ HTTP }) {
   return HTTP.select('inquiryDuplicates').flatten()

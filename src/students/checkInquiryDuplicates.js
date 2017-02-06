@@ -94,33 +94,33 @@ function view({ form$, isSearchSubmitted$ }) {
 }
 
 function checkInquiryDuplicates(sources) {
-  const firstnameInput = fieldComponent({
-    DOM: sources.DOM,
-    props: xs.of({
+  const firstnameInput = fieldComponent(
+    sources,
+    xs.of({
       name: 'Firstname',
       required: true,
       placeholder: '名（漢字）'
     })
-  });
+  );
 
-  const lastnameInput = fieldComponent({
-    DOM: sources.DOM,
-    props: xs.of({
+  const lastnameInput = fieldComponent(
+    sources,
+    xs.of({
       name: 'Lastname',
       required: true,
       placeholder: '姓（漢字）'
     })
-  });
+  );
 
-  const birthdateInput = fieldComponent({
-    DOM: sources.DOM,
-    props: xs.of({
+  const birthdateInput = fieldComponent(
+    sources,
+    xs.of({
       name: 'BirthDate',
       type: 'date',
       required: true,
       placeholder: '生年月日'
     })
-  });
+  );
 
   const searchSubmitButton = buttonComponent({
     DOM: sources.DOM,

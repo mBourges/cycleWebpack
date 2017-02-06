@@ -30,6 +30,7 @@ function app(sources) {
 
 function main(sources) {
   const logout$ = sources.DOM.select('.logout').events('click')
+    .debug(event => event.preventDefault())
     .mapTo('logout');
 
   const displayLogin = sources.auth0.token$

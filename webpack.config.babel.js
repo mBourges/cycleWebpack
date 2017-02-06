@@ -14,7 +14,7 @@ module.exports = env => {
     entry: {
       app: './index.js',
       auth: ['auth0-lock', 'jwt-decode'],
-      vendors: [
+      cycle: [
         '@cycle/dom',
         '@cycle/xstream-run',
         'xstream',
@@ -22,7 +22,9 @@ module.exports = env => {
         '@cycle/isolate',
         'cyclic-router',
         'history',
-        'switch-path',
+        'switch-path'
+      ],
+      immutable: [
         'immutable'
       ]
     },
@@ -38,15 +40,26 @@ module.exports = env => {
       extensions: [".js", ".json", ".jsx", ".css", "scss"]
     },
     module: {
-      loaders: [
-        { test: /\.js$/, loaders: ['babel-loader'], exclude: /node_modules/ },
+      rules: [
+        {
+          test: /\.js$/,
+          loaders: 'babel-loader',
+          exclude: /node_modules/,
+          options: {
+            presets: [
+              ["es2015", { "modules": false }],
+              "es2016",
+              "stage-2"
+            ]
+          }
+        },
         { test: /\.css$/, loader: ExtractTextPlugin.extract({
           fallbackLoader: 'style-loader',
           loader: 'css-loader!postcss-loader'
         })  },
         { test: /\.scss$/, loader: ExtractTextPlugin.extract({
           fallbackLoader: 'style-loader',
-          loader: 'css-loader!sass-loader'
+          loader: 'css-loader!postcss-loader!sass-loader'
         })  },
         {
           test: /\.(eot|svg|ttf|woff|woff2|png)$/,
@@ -57,12 +70,12 @@ module.exports = env => {
     plugins: removeEmpty([
       new ProgressBarPlugin(),
       new ExtractTextPlugin({
-        filename: env.prod ? 'styles.[name].[chunkhash].css': 'styles.[name].css',
+        filename: env.prod ? 'public/css/styles.[name].[chunkhash].css': 'public/css/styles.[name].css',
         allChunks: true
       }),
       ifProd(new InlineManifestWebpackPlugin()),
       ifProd(new webpack.optimize.CommonsChunkPlugin({
-        name: ['auth', 'vendors', 'manifest']
+        name: ['auth', 'cycle', 'immutable', 'manifest']
       })),
       new HtmlWebpackPlugin({
         template: './index.html'

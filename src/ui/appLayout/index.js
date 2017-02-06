@@ -5,6 +5,8 @@ import mobileMenu from '../appBar/mobileMenu';
 import mobileSidebar from '../appBar/mobileSidebar';
 import './style.scss';
 
+import dropdown from '../input/dropdown';
+
 export default function AppLayout(sources) {
    const navLinkClick$ = sources.DOM.select('.navLink').events('click')
     .map(ev => {
@@ -44,8 +46,30 @@ export default function AppLayout(sources) {
 
   const child = sources.props.child
 
-  const page$ = xs.combine(AppBar.DOM, MobileAppBar.DOM, child.DOM, MobileSidebar.DOM, openMenu$)
-    .map(([AppBarDOM, MobileAppBarDOM, childDOM, MobileSidebarDOM, isOpen]) =>
+
+const list = dropdown(sources, xs.of({
+  default: 'other',
+  sources: [{
+    label: 'Male',
+    value: 'male'
+  }, {
+    label: 'Female',
+    value: 'female'
+  }, {
+    label: 'Other',
+    value: 'other'
+  }]
+}));
+// const list2 = dropdown(sources);
+
+list.selectedValue$.addListener({
+  next: i => console.log('selected Value: ', i),
+  error: err => console.error(err),
+  complete: () => console.log('completed'),
+})
+
+  const page$ = xs.combine(list.DOM, /*list2.DOM,*/ AppBar.DOM, MobileAppBar.DOM, child.DOM, MobileSidebar.DOM, openMenu$)
+    .map(([listDOM, /*list2DOM,*/ AppBarDOM, MobileAppBarDOM, childDOM, MobileSidebarDOM, isOpen]) =>
       div('.pushable', [
         MobileAppBarDOM,
         MobileSidebarDOM,
@@ -55,7 +79,8 @@ export default function AppLayout(sources) {
             div('.article', [
               div('.article__inner', [
                 childDOM,
-                button('.logout', 'logout')
+                listDOM,
+                /*list2DOM*/
               ])
             ])
           ])

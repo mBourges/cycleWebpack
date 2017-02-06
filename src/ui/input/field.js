@@ -3,7 +3,7 @@ import { div, label, input, span } from '@cycle/dom';
 import isolate from '@cycle/isolate';
 import './style.scss';
 
-function inputComponent({ DOM, props }) {
+function inputComponent({ DOM }, props = xs.of({})) {
   const component$ = props
     .map(props => input('.inputField', {
         props: {
@@ -26,4 +26,4 @@ function inputComponent({ DOM, props }) {
   }
 }
 
-export default sources => isolate(inputComponent)(sources);
+export default (sources, props) => isolate(inputComponent)(sources, props);
